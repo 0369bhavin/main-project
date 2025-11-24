@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Table Booking Selector</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo">Select Your Hotel</div>
+        <nav>
+            <a href="#">Home</a>
+            <a href="#booking">Book Table</a>
+            <a href="#reviews">Reviews</a>
+            <button id="login-btn">Login / Sign Up</button>
+        </nav>
+    </header>
+
+    <div class="promo-carousel">
+        <div class="carousel-track">
+            <div class="card">🎁 Birthday Offer: 15% Off Your Bill!</div>
+            <div class="card">⭐ First Time Visitor: Free Dessert!</div>
+            <div class="card">🎉 Weekend Special: 20% Off Wine List!</div>
+            <div class="card">🎁 Birthday Offer: 15% Off Your Bill!</div>
+            <div class="card">⭐ First Time Visitor: Free Dessert!</div>
+        </div>
+    </div>
+    
+    <div id="system-message-area"></div>
+
+    <section id="booking" class="container">
+        <h1>Book Your Table</h1>
+        
+        <input type="hidden" id="is-logged-in" value="false">
+
+        <div id="booking-access-area">
+            <p id="login-prompt" class="access-message">
+                Please **Login / Sign Up** above to book your table.
+            </p>
+
+            <form id="booking-form" style="display:none;">
+                
+                <div class="form-group">
+                    <label for="hotel-select">Select a Hotel</label>
+                    <select id="hotel-select" required>
+                        <option value="" disabled selected>Choose a location</option>
+                        <option value="grand">radha krisna (virar (east))</option>
+                        <option value="palace"> ashraya(virar (east))</option>
+                        <option value="manor">madhuram(virar (west))</option>
+                        <option value="mager">vivanta(virar (west))</option>
+                        <option value="group">icha purti (virar (west))</option>
+                        <option value="town">prasadam (virar(west))</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date & Time</label>
+                        <input type="datetime-local" id="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="guests">Number of Guests</label>
+                        <input type="number" id="guests" min="1" max="15" value="2" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Seating Preference</label>
+                        <div class="radio-group">
+                            <input type="radio" id="ac" name="seating" value="AC" checked> <label for="ac">AC</label>
+                            <input type="radio" id="non-ac" name="seating" value="Non-AC"> <label for="non-ac">Non-AC</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="table-no">Select Table (1-15)</label>
+                        <select id="table-no" required>
+                            <option value="" disabled selected>Select an available table</option>
+                            <script>
+                                for (let i = 1; i <= 15; i++) {
+                                    document.write(`<option value="${i}">Table No. ${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Special Offer / Visit Type</label>
+                    <div class="radio-group offer-group">
+                        <input type="radio" id="first-time" name="offer" value="First Time"> <label for="first-time">First-Time Visitor</label>
+                        <input type="radio" id="birthday" name="offer" value="Birthday"> <label for="birthday">Birthday Offer</label>
+                        <input type="radio" id="regular" name="offer" value="Regular" checked> <label for="regular">Regular Customer</label>
+                    </div>
+                </div>
+                
+                <button type="submit" id="proceed-btn">Proceed to Payment</button>
+            </form>
+        </div>
+    </section>
+    
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal="login-modal">&times;</span>
+            <h2>User Login</h2>
+            <form id="login-form">
+                <input type="email" placeholder="Email" id="login-email" required>
+                <div class="password-container">
+                    <input type="password" id="login-password" placeholder="Password" required minlength="8">
+                    <i class="far fa-eye" id="togglePassword"></i>
+                </div>
+                <div id="login-error-message" class="error-message"></div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="payment-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" data-modal="payment-modal">&times;</span>
+            <h2>Complete Payment</h2>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div class="radio-group payment-group">
+                        <input type="radio" id="cod" name="payment-method" value="COD" checked> <label for="cod">COD</label>
+                        <input type="radio" id="credit" name="payment-method" value="Credit Card"> <label for="credit">Credit Card</label>
+                        <input type="radio" id="debit" name="payment-method" value="Debit Card"> <label for="debit">Debit Card</label>
+                    </div>
+                </div>
+                <div id="card-details" style="display:none;">
+                    <h3>Card Details</h3>
+                    <div class="form-group">
+                        <label for="card-number">Card Number</label>
+                        <input type="text" id="card-number" placeholder="XXXX XXXX XXXX XXXX" maxlength="16">
+                        <div id="card-number-error" class="error-message"></div>
+                    </div>
+                    <div class="card-inline">
+                        <div class="form-group">
+                            <label for="card-expiry">Expiry (MM/YY)</label>
+                            <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5">
+                            <div id="expiry-error" class="error-message"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvv">CVV</label>
+                            <input type="text" id="card-cvv" placeholder="XXX" maxlength="4">
+                            <div id="cvv-error" class="error-message"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="payment-error-message" class="error-message"></div>
+                <button type="submit" id="final-book-btn">Confirm Booking</button>
+            </form>
+        </div>
+    </div>
+
+
+    <section id="reviews" class="container review-section">
+        <h2>Customer Reviews</h2>
+        <div class="reviews-carousel">
+            <div class="reviews-track">
+                <div class="review-card">
+                    <p class="rating">★★★★★</p>
+                    <p>"Amazing food and service! The AC section was perfect."</p>
+                    <small>- Sarah K.</small>
+                </div>
+                <div class="review-card">
+                    <p class="rating">★★★★☆</p>
+                    <p>"Easy to book online. The birthday offer was a lovely surprise!"</p>
+                    <small>- David L.</small>
+                </div>
+                <div class="review-card">
+                    <p class="rating">★★★★★</p>
+                    <p>"Our favorite spot. Always consistent and delicious."</p>
+                    <small>- Emily C.</small>
+                </div>
+                <div class="review-card">
+                    <p class="rating">★★★★★</p>
+                    <p>"Amazing food and service! The AC section was perfect."</p>
+                    <small>- Sarah K.</small>
+                </div>
+            </div>
+        </div>
+
+        <h3>Leave Your Review</h3>
+        <form id="review-form">
+            <div class="form-group">
+                <label for="user-review">Your Experience (1-5 Stars)</label>
+                <select id="user-rating" required>
+                    <option value="5">★★★★★ Excellent</option>
+                    <option value="4">★★★★☆ Very Good</option>
+                    <option value="3">★★★☆☆ Good</option>
+                    <option value="2">★★☆☆☆ Fair</option>
+                    <option value="1">★☆☆☆☆ Poor</option>
+                </select>
+            </div>
+            <textarea id="user-review" rows="4" placeholder="Share your feedback here..." required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
